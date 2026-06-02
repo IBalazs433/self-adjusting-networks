@@ -14,7 +14,8 @@ class Node:
         is_root: True if the node has no parent.
 
     Methods:
-        __str__: Returns a string representation of the node.
+        __str__: 
+            Returns a string representation of the node.
     """
 
     def __init__(self, key, parent=None):
