@@ -6,7 +6,7 @@ class BinarySearchTree:
 
     Attributes: 
         root: Reference to the root node.
-        hop_count: Cumulative number of edge traversals performed during search operations.
+        hop_count: Cumulative number of nodes visited during search operations.
 
     Methods:
         insert(key): 
@@ -22,7 +22,7 @@ class BinarySearchTree:
                 A reference to the node if found, otherwise None.
 
             Side effects:
-            Increments hop_count by the number of edges traversed during the search.
+                Increments hop_count by the number of nodes visited during the search.
     """
 
 
@@ -72,18 +72,21 @@ class BinarySearchTree:
             A reference to the node if found, otherwise None.
 
         Side effects:
-            Increments hop_count by the number of edges traversed during the search.
+            Increments hop_count by the number of nodes visited during the search.
         """
 
         current = self.root
 
+        if current is None:
+            self.hop_count += 1
+
         while current is not None:
+            self.hop_count += 1
             if key == current.key:
                 return current
             elif key < current.key:
                 current = current.left
             else:
                 current = current.right
-            self.hop_count += 1
         
         return None
