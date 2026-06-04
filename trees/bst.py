@@ -1,34 +1,24 @@
 from node import Node
 
+
 class BinarySearchTree:
     """
     A binary search tree (BST) implementation.
 
     Attributes: 
         root: Reference to the root node.
-        hop_count: Cumulative number of nodes visited during search operations.
+
+        search_cost: Cumulative number of nodes visited during search operations.
 
     Methods:
-        insert(key): 
-            Inserts a node with the given key into the tree.
+        insert(key): Inserts a node with the given key into the tree.
 
-            Returns:
-                A reference to the newly inserted node.
-        
-        search(key):
-            Searches for a node with the given key.
-
-            Returns:
-                A reference to the node if found, otherwise None.
-
-            Side effects:
-                Increments hop_count by the number of nodes visited during the search.
+        search(key): Searches for a node with the given key.
     """
 
-
-    def __init__(self, hop_count=0):
+    def __init__(self):
         self.root = None
-        self.hop_count = hop_count
+        self.search_cost = 0
 
 
     def insert(self, key):
@@ -72,16 +62,16 @@ class BinarySearchTree:
             A reference to the node if found, otherwise None.
 
         Side effects:
-            Increments hop_count by the number of nodes visited during the search.
+            Increments search_cost by the number of nodes visited during the search.
         """
 
         current = self.root
 
         if current is None:
-            self.hop_count += 1
+            return None
 
         while current is not None:
-            self.hop_count += 1
+            self.search_cost += 1
             if key == current.key:
                 return current
             elif key < current.key:
@@ -90,3 +80,11 @@ class BinarySearchTree:
                 current = current.right
         
         return None
+    
+
+    def reset_counters(self):
+        """
+        Resets all performance counters.
+        """
+
+        self.search_cost = 0

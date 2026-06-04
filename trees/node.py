@@ -34,7 +34,3 @@ class Node:
     @property
     def is_right_child(self):
         return (self.parent is not None) and (self.parent.right is self)
-
-    @property
-    def is_root(self):
-        return self.parent is None
