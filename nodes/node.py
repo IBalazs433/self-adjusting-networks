@@ -11,9 +11,8 @@ class Node:
     Properties:
         is_left_child: True if the node is the left child of its parent.
         is_right_child: True if the node is the right child of its parent.
-        is_root: True if the node has no parent.
 
-    Methods:
+    Methods:   
         __str__: 
             Returns a string representation of the node.
     """

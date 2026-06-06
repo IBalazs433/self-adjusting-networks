@@ -1,4 +1,5 @@
-from bst import BinarySearchTree
+from trees.bst import BinarySearchTree
+
 
 def optimal_bst_roots(keys, freq):
     """

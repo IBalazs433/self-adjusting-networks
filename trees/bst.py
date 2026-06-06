@@ -1,4 +1,4 @@
-from node import Node
+from nodes.node import Node
 
 
 class BinarySearchTree:
@@ -6,14 +6,18 @@ class BinarySearchTree:
     A binary search tree (BST) implementation.
 
     Attributes: 
-        root: Reference to the root node.
+        root: 
+            Reference to the root node.
 
-        search_cost: Cumulative number of nodes visited during search operations.
+        search_cost: 
+            Cumulative number of nodes visited during search operations.
 
     Methods:
-        insert(key): Inserts a node with the given key into the tree.
+        insert(key): 
+            Inserts a node with the given key into the tree.
 
-        search(key): Searches for a node with the given key.
+        search(key):   
+            Searches for a node with the given key.
     """
 
     def __init__(self):
