@@ -24,6 +24,9 @@ def build_graph(node, D=None):
 
     if node is None:
         return D
+    
+    # Add the node itself for 1 node networks
+    D.add_node(node.key)
 
     if node.left is not None:
         D.add_edge(node.key, node.left.key, type="L")
