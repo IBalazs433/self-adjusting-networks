@@ -135,7 +135,6 @@ class BinarySearchTreeNetwork:
             Both keys are present in the tree.
         """
 
-
         current = self.root
         depth = 0
 
