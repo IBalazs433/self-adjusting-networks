@@ -25,7 +25,7 @@ def generate_hotset_requests(n, m, hot_fraction, hot_probability, dim):
             else:
                 u = random.choice(all_nodes)
 
-            requests.append((u, v))
+            requests.append(u)
 
 
     elif dim == 2:
@@ -42,6 +42,6 @@ def generate_hotset_requests(n, m, hot_fraction, hot_probability, dim):
                 while v == u:
                     v = random.choice(all_nodes)
 
-            requests.append((u, v))
+            requests.append([u, v])
 
     return requests

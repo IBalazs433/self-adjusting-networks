@@ -87,7 +87,7 @@ def insertion_order(roots, i, j):
 
     return [r] + left + right
 
-def build_optimal_bst(R):
+def build_optimal_bst_network(R):
     """
     Constructs an optimal static binary search tree from a set of keys and
     their access frequencies.
