@@ -2,78 +2,111 @@
 
 Master's thesis project on self-adjusting communication networks based on binary search trees.
 
-The goal of this project is to implement and compare static and self-adjusting tree-based network topologies under different communication workloads.
+The goal of this project is to implement and experimentally compare static and self-adjusting tree-based data structures and communication networks under different request distributions.
 
 ## Implemented Data Structures
 
-- Binary Search Tree (BST)
-- Optimal Static BST
-- Splay Tree
+* Binary Search Tree (BST)
+* Optimal Static BST
+* Splay Tree
 
 ## Implemented Networks
 
-- BST-Based Network
-- Optimal Static Network
-- SplayNet
+* Binary Search Tree Network
+* Optimal Static BST Network
+* SplayNet
 
-## Workloads
+## Implemented Workloads
 
-- Uniform Random Requests
-- Zipf-Distributed Requests
-- Temporal Locality Requests
+* Uniform Random
+* Temporal Locality 
+* Hot-Set 
 
 ## Repository Structure
 
 ```text
-src/
-├── trees/
-│   ├── node.py
-│   ├── bst.py
-│   ├── optimal_bst.py
-│   └── splay_tree.py
-│
-├── networks/
-│   ├── bst_network.py
-│   ├── optimal_network.py
-│   └── splaynet.py
-│
-├── workloads/
-│   ├── uniform.py
-│   ├── zipf.py
-│   └── temporal_locality.py
-│
-├── experiments/
-│   └── run_experiments.py
-│
-└── visualization/
-    └── plots.py
+nodes/
+└── node.py
+
+trees/
+├── bst.py
+├── optimal_bst.py
+└── splay_tree.py
+
+networks/
+├── bst_network.py
+├── optimal_network.py
+└── splaynet.py
+
+workloads/
+├── uniform.py
+├── temporal.py
+└── hot_set.py
+
+visualizations/
+├── graph_visualization.py
+└── results_visualization.py
+
+tests/
+├── test_trees.ipynb
+└── test_networks.ipynb
+
+experiments/
+├── data_structures.ipynb
+└── networks.ipynb
 ```
 
-## Running Experiments
+## Experimental Methodology
 
-Run:
+### Data Structures
 
-```bash
-python src/experiments/run_experiments.py
-```
+The following data structures are evaluated:
 
-The script generates communication requests, executes the selected network models, and stores the results.
+* Binary Search Tree (BST)
+* Optimal Static BST
+* Splay Tree
 
-## Results
+Since the BST and Splay Tree depend on the insertion order of the keys, experiments are repeated over multiple random initializations and the reported results are averaged.
 
-Experimental results are stored in CSV format and can be visualized using:
+The Optimal Static BST is constructed from the request frequencies and serves as a static baseline.
 
-```bash
-python src/visualization/plots.py
-```
+Metrics:
+
+* Search Cost
+* Rotation Count
+
+### Networks
+
+The following communication networks are evaluated:
+
+* BST Network
+* Optimal Static BST Network
+* SplayNet
+
+As with the tree experiments, BST Network and SplayNet results are averaged over multiple random initializations.
+
+The Optimal Static BST Network is constructed from the communication request matrix and serves as a static baseline.
+
+Metrics:
+
+* Total Communication Cost
+* Rotation Count
+
+## Visualization
+
+The repository contains functions for:
+
+* Binary tree visualization using NetworkX and Graphviz
+* Experimental result visualization using Matplotlib
+
+Left-child edges are displayed in blue and right-child edges in red.
 
 ## References
 
-## References
+1. D. D. Sleator and R. E. Tarjan, *Self-Adjusting Binary Search Trees*, Journal of the ACM, 1985.
 
-1. Sleator, D. D., & Tarjan, R. E. *Self-Adjusting Binary Search Trees* (1985).
-2. Knuth, D. E. *Optimum Binary Search Trees* (1971).
-3. Avin, C., & Schmid, S. *Toward Demand-Aware Networking: A Theory for Self-Adjusting Networks* (2019).
-4. Schmid, S., Avin, C., Scheideler, C., Borokhovich, M., Haeupler, B., & Lotker, Z. *SplayNet: Towards Locally Self-Adjusting Networks* (2018).
+2. D. E. Knuth, *Optimum Binary Search Trees*, Acta Informatica, 1971.
 
+3. C. Avin and S. Schmid, *Toward Demand-Aware Networking: A Theory for Self-Adjusting Networks*, SIGCOMM Computer Communication Review, 2019.
 
+4. S. Schmid, C. Avin, C. Scheideler, M. Borokhovich, B. Haeupler, and Z. Lotker, *SplayNet: Towards Locally Self-Adjusting Networks*, IEEE/ACM Transactions on Networking, 2018.

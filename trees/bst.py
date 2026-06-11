@@ -3,21 +3,11 @@ from nodes.node import Node
 
 class BinarySearchTree:
     """
-    A binary search tree (BST) implementation.
+    Binary search tree (BST) implementation.
 
-    Attributes: 
-        root: 
-            Reference to the root node.
-
-        search_cost: 
-            Cumulative number of nodes visited during search operations.
-
-    Methods:
-        insert(key): 
-            Inserts a node with the given key into the tree.
-
-        search(key):   
-            Searches for a node with the given key.
+    Attributes:
+        root: Root node of the tree, or None if the tree is empty.
+        search_cost: Cumulative number of nodes visited during search operations.
     """
 
     def __init__(self):
@@ -29,66 +19,58 @@ class BinarySearchTree:
         """
         Insert a node with the given key into the tree.
 
-        Parameters:
-            key: The value to insert.
+        Args: 
+            key: Key of the node to insert.
 
         Returns:
-            Node: A reference to the newly inserted node.
+            Reference to the newly inserted node.
         """
 
         if self.root is None:
             self.root = Node(key)
             return self.root
 
-        current = self.root
+        current_node = self.root
 
         while True:
-            if key < current.key:
-                if current.left is None:
-                    current.left = Node(key, parent=current)
-                    return current.left
-                current = current.left
+            if key < current_node.key:
+                if current_node.left is None:
+                    current_node.left = Node(key, parent=current_node)
+                    return current_node.left
+                current_node = current_node.left
             else:
-                if current.right is None:
-                    current.right = Node(key, parent=current)
-                    return current.right
-                current = current.right
+                if current_node.right is None:
+                    current_node.right = Node(key, parent=current_node)
+                    return current_node.right
+                current_node = current_node.right
 
 
     def search(self, key):
+        """ 
+        Search for a node with the given key. 
+
+        Args: 
+            key: Key to search for. 
+
+        Returns: 
+            The corresponding node if found, otherwise None. 
+
+        Side Effects: 
+            Increments search_cost by the number of visited nodes. 
         """
-        Searches for a node with the given key.
 
-        Parameters: 
-            key: The value to search for in the tree.
+        current_node = self.root
 
-        Returns:
-            A reference to the node if found, otherwise None.
-
-        Side effects:
-            Increments search_cost by the number of nodes visited during the search.
-        """
-
-        current = self.root
-
-        if current is None:
+        if current_node is None:
             return None
 
-        while current is not None:
+        while current_node is not None:
             self.search_cost += 1
-            if key == current.key:
-                return current
-            elif key < current.key:
-                current = current.left
+            if key == current_node.key:
+                return current_node
+            elif key < current_node.key:
+                current_node = current_node.left
             else:
-                current = current.right
+                current_node = current_node.right
         
         return None
-    
-
-    def reset_counters(self):
-        """
-        Resets all performance counters.
-        """
-
-        self.search_cost = 0

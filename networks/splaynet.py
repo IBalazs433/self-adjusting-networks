@@ -2,7 +2,18 @@ from nodes.node import Node
 
 class SplayNet:
     """
-    This is the implementation of SplayNet.
+    SplayNet communication network.
+
+    SplayNet is a self-adjusting network based on a binary search tree.
+    After serving a communication request, the network performs local
+    rotations to adapt its topology to the observed communication pattern.
+
+    Attributes:
+        root: Root node of the network.
+        total_communication_cost: Cumulative communication cost of all
+            processed requests.
+        rotations: Cumulative number of rotations performed during
+            network reconfiguration.
     """
 
     def __init__(self):
@@ -10,236 +21,219 @@ class SplayNet:
         self.total_communication_cost = 0
         self.rotations = 0
 
+
     def insert(self, key):
         """
-        Inserts a node with the given key into the network.
+        Insert a node with the given key into the network.
 
-        The node is placed according to the binary search tree property.
-
-        Parameters:
-            key:
-                Unique identifier of the node.
+        Args:
+            key: Unique identifier of the node.
 
         Returns:
-            Node:
-                Reference to the inserted node.
+            Reference to the newly inserted node.
 
         Precondition:
-            The key is not already in the tree.
+            The key is not already present in the network.
         """
 
         if self.root is None:
             self.root = Node(key)
             return self.root
 
-        current = self.root
+        current_node = self.root
 
         while True:
-            if key < current.key:
-                if current.left is None:
-                    current.left = Node(key, parent=current)
-                    return current.left
-                current = current.left
+            if key < current_node.key:
+                if current_node.left is None:
+                    current_node.left = Node(key, parent=current_node)
+                    return current_node.left
+                current_node = current_node.left
             else:
-                if current.right is None:
-                    current.right = Node(key, parent=current)
-                    return current.right
-                current = current.right
+                if current_node.right is None:
+                    current_node.right = Node(key, parent=current_node)
+                    return current_node.right
+                current_node = current_node.right
 
     def search(self, key):
         """
-        Searches for a node with the given key.
+        Search for a node with the specified key.
 
-        Parameters: 
-            key: The value to search for in the tree.
+        Args:
+            key: Key to search for.
 
         Returns:
-            A reference to the node if found, otherwise None.
+            The corresponding node if found, otherwise None.
         """
 
-        current = self.root
+        current_node = self.root
 
-        if current is None:
+        if current_node is None:
             return None
 
-        while current is not None:
-            if key == current.key:
-                return current
-            elif key < current.key:
-                current = current.left
+        while current_node is not None:
+            if key == current_node.key:
+                return current_node
+            elif key < current_node.key:
+                current_node = current_node.left
             else:
-                current = current.right
+                current_node = current_node.right
         
         return None
 
-    def least_common_ancestor(self, key_u, key_v):
+    def least_common_ancestor(self, sender_key, receiver_key):
         """
         Compute the least common ancestor of two nodes.
 
-        The least common ancestor (LCA) of two nodes is the deepest node
-        that is an ancestor of both.
+        The least common ancestor (LCA) is the deepest node that is an
+        ancestor of both nodes.
 
-        Parameters:
-            key_u:
-                Key of the first node.
-
-            key_v:
-                Key of the second node.
+        Args:
+            sender_key: Key of the first node.
+            receiver_key: Key of the second node.
 
         Returns:
-                A reference to the least common ancestor if exists, otherwise None.
+            Reference to the least common ancestor if it exists,
+            otherwise None.
 
         Precondition:
-            Both keys are present in the tree.
+            Both keys are present in the network.
         """
 
-        current = self.root
+        current_node = self.root
 
-        if current is None:
+        if current_node is None:
             return None
 
-        while current is not None:
-            if key_u < current.key and key_v < current.key:
-                current = current.left
-            elif key_u > current.key and key_v > current.key:
-                current = current.right
+        while current_node is not None:
+            if sender_key < current_node.key and receiver_key < current_node.key:
+                current_node = current_node.left
+            elif sender_key > current_node.key and receiver_key > current_node.key:
+                current_node = current_node.right
             else:
-                return current
+                return current_node
 
         return None 
 
-    def request(self, s_key, t_key):
+    def request(self, sender_key, receiver_key):
         """
         Process a communication request between two nodes.
 
-        The communication cost equals the distance between the two nodes
-        in the binary search tree. The cost is added to the cumulative
-        communication cost maintained by the network.
+        The request is served according to the SplayNet algorithm.
+        After identifying the communicating nodes and their least
+        common ancestor, local splay operations are performed to
+        adapt the network topology.
 
-        Parameters:
-            key_u:
-                Sender node identifier.
-
-            key_v:
-                Receiver node identifier.
+        Args:
+            sender_key: Sender node identifier.
+            receiver_key: Receiver node identifier.
 
         Returns:
-            tuple[Node, Node, Node] | None:
-                References to the sender, receiver and their least common
-                ancestor if both nodes exist; otherwise None.
+            References to the sender, receiver, and their least
+            common ancestor if both nodes exist; otherwise
+            (None, None, None).
         """
-        s = self.search(s_key)
-        t = self.search(t_key)
+        sender = self.search(sender_key)
+        receiver = self.search(receiver_key)
 
-        if s and t:
+        if sender and receiver:
             self.total_communication_cost += 1
-            lca = self.least_common_ancestor(s_key, t_key)
-            self.splay(s, lca)
-            if s_key < t_key:
-                self.splay(t, s.right)
+            lca = self.least_common_ancestor(sender_key, receiver_key)
+            self.splay(sender, lca)
+            if sender_key < receiver_key:
+                self.splay(receiver, sender.right)
             else:
-                self.splay(t, s.left)
+                self.splay(receiver, sender.left)
 
-            return s, t, lca
+            return sender, receiver, lca
 
         return None, None, None
     
     def splay(self, node, stop_node):
         """
-        Moves a node to the stop_node by repeated tree rotations.
-        This method repeatedly applies tree rotations until the node
-        is in the place of stop_node, using Zig, ZigZig, and ZigZag operations.
+        Move a node toward a specified stop node using rotations.
 
-        Parameters:
-            node: The node to be moved to the root.
-            stop_node:
+        The procedure applies Zig, Zig-Zig, and Zig-Zag steps until
+        the node reaches the position immediately below the stop node
+        or replaces the stop node.
+
+        Args:
+            node: Node to be moved.
+            stop_node: Ancestor at which the splaying process stops.
 
         Returns:
-            A reference to the node.
+            The moved node.
         """
         
         if node == stop_node:
             return node
 
         while True:
-            
-            p = node.parent
-            if p == stop_node:
+            parent = node.parent
+            if parent == stop_node:
+                # Zig step: the parent is the stop_node.
                 if node.is_left_child:
                     self.rotate_right(node)
                 else:
                     self.rotate_left(node)
                 return node
             
-            g = p.parent
-            if g == stop_node:
-                if node.is_left_child and p.is_left_child:
-                    self.rotate_right(p)
-                    self.rotate_right(node)
+            grandparent = parent.parent
+            # Zig-Zig step: node and parent are on the same side.
+            if node.is_left_child and parent.is_left_child:
+                self.rotate_right(parent)
+                self.rotate_right(node)
 
-                elif node.is_right_child and p.is_right_child:
-                    self.rotate_left(p)
-                    self.rotate_left(node)
+            elif node.is_right_child and parent.is_right_child:
+                self.rotate_left(parent)
+                self.rotate_left(node)
 
-                elif node.is_left_child and p.is_right_child:
-                    self.rotate_right(node)
-                    self.rotate_left(node)
+            # Zig-Zag step: node and parent are on opposite sides.
+            elif node.is_left_child and parent.is_right_child:
+                self.rotate_right(node)
+                self.rotate_left(node)
 
-                elif node.is_right_child and p.is_left_child:
-                    self.rotate_left(node)
-                    self.rotate_right(node)
+            elif node.is_right_child and parent.is_left_child:
+                self.rotate_left(node)
+                self.rotate_right(node)
+
+            # Stop after the final step.
+            if grandparent == stop_node:
                 return node
-                
-            if node.is_left_child and p.is_left_child:
-                self.rotate_right(p)
-                self.rotate_right(node)
-
-            elif node.is_right_child and p.is_right_child:
-                self.rotate_left(p)
-                self.rotate_left(node)
-
-            elif node.is_left_child and p.is_right_child:
-                self.rotate_right(node)
-                self.rotate_left(node)
-
-            elif node.is_right_child and p.is_left_child:
-                self.rotate_left(node)
-                self.rotate_right(node)
 
 
     def rotate_right(self, node):
         """
-        Performs a right rotation around the given node and their parent.
+        Perform a right rotation between a node and its parent.
 
-        Parameters:
-            node: The child node that moves up during rotation.
+        Args:
+            node: Child node that moves above its parent.
 
         Returns:
-            A reference to the node moved higher.
+            The promoted node.
 
-        Side effects:
-            The node becomes the parent of its current parent. 
-            The binary search tree relations are updated accordingly.
+        Side Effects:
+            Updates parent-child relationships while preserving the
+            binary search tree property.
         """
 
         self.rotations += 1
 
-        p = node.parent
-        g = p.parent
+        parent = node.parent
+        grandparent = parent.parent
 
-        p.left = node.right
+        parent.left = node.right
         if node.right is not None:
-            node.right.parent = p
-        node.right = p
-        p.parent = node
-        node.parent = g
-        if g is not None:
-            if g.left == p:
-                g.left = node
+            node.right.parent = parent
+        node.right = parent
+        parent.parent = node
+        node.parent = grandparent
+        if grandparent is not None:
+            if grandparent.left == parent:
+                grandparent.left = node
             else:
-                g.right = node
+                grandparent.right = node
         
-        if self.root is p:
+        if self.root is parent:
             self.root = node
         
         return node
@@ -247,38 +241,37 @@ class SplayNet:
 
     def rotate_left(self, node):
         """
-        Performs a left rotation around the given node and their parent.
+        Perform a left rotation between a node and its parent.
 
-        Parameters:
-            node: The child node that moves up during rotation.
+        Args:
+            node: Child node that moves above its parent.
 
         Returns:
-            A reference to the node moved higher.
+            The promoted node.
 
-        Side effects:
-            The node becomes the parent of its current parent. 
-            The binary search tree relations are updated accordingly.
+        Side Effects:
+            Updates parent-child relationships while preserving the
+            binary search tree property.
         """
 
         self.rotations += 1
 
-        p = node.parent
-        g = p.parent
+        parent = node.parent
+        grandparent = parent.parent
 
-        p.right = node.left
+        parent.right = node.left
         if node.left:
-            node.left.parent = p
-        node.left = p
-        p.parent = node
-        node.parent = g
-        if g is not None:
-            if g.left == p:
-                g.left = node
+            node.left.parent = parent
+        node.left = parent
+        parent.parent = node
+        node.parent = grandparent
+        if grandparent is not None:
+            if grandparent.left == parent:
+                grandparent.left = node
             else:
-                g.right = node
+                grandparent.right = node
 
-        if self.root is p:
+        if self.root is parent:
             self.root = node
         
         return node
-    

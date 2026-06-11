@@ -3,29 +3,33 @@ import random
 
 def generate_random_requests(n, m, dim):
     """
-    Generate a uniformly random communication requests over n nodes and m length.
+    Generate uniformly random requests.
 
-    Parameters:
+    Args:
         n: Number of nodes.
+        m: Number of requests to generate.
+        dim: Request dimension.
 
-        m: Number of requests.
+            - 1: Generates single-node access requests.
+            - 2: Generates communication requests represented as
+            (sender, receiver) pairs.
 
-        dim: dimension of array. 1 or 2
+    Returns:
+        List of generated requests.
     """
 
     requests = []
 
     if dim == 1:
         for _ in range(m):
-            u = random.randrange(n)
-            requests.append(u)
+            requests.append(random.randrange(n))
 
     elif dim == 2:
         for _ in range(m):
-            u = random.randrange(n)
-            v = random.randrange(n)
-            while u == v:
-                v = random.randrange(n)
-            requests.append([u, v])
+            sender = random.randrange(n)
+            receiver = random.randrange(n)
+            while sender == receiver:
+                receiver = random.randrange(n)
+            requests.append((sender, receiver))
 
     return requests
