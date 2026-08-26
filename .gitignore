@@ -221,3 +221,9 @@ __marimo__/
 
 # VS Code settings
 .vscode/
+
+# tex code
+*.tex
+
+# csv files
+*.csv

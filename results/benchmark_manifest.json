@@ -1,0 +1,31 @@
+{
+  "trials": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "tree_experiments": [
+    "uniform",
+    "hotset_0.1",
+    "hotset_0.3",
+    "hotset_0.5",
+    "temporal_0.5",
+    "temporal_0.9"
+  ],
+  "network_experiments": [
+    "uniform",
+    "hotset_0.1",
+    "hotset_0.3",
+    "hotset_0.5",
+    "temporal_0.5",
+    "temporal_0.9"
+  ],
+  "results_dir": "/home/ibalazs/Desktop/self-adjusting-networks/results"
+}

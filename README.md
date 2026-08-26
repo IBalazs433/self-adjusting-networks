@@ -1,112 +1,112 @@
 # Self-Adjusting Networks
 
-Master's thesis project on self-adjusting communication networks based on binary search trees.
+This repository studies self-adjusting binary-search trees and their network analogues under different workload patterns. The project combines algorithm implementations, reproducible workload generators, an experiment runner, and saved benchmark outputs for visual and tabular comparison.
 
-The goal of this project is to implement and experimentally compare static and self-adjusting tree-based data structures and communication networks under different request distributions.
+## Current project state
 
-## Implemented Data Structures
+As of August 2026, the codebase is a working research prototype with the core implementation in place and benchmark artifacts generated under `results/`.
 
-* Binary Search Tree (BST)
-* Optimal Static BST
-* Splay Tree
+Implemented pieces include:
 
-## Implemented Networks
+- tree structures: BST, optimal static BST, and Splay Tree,
+- network structures: BST network, optimal static BST network, and SplayNet,
+- workload generators: uniform, hot-set, and temporal-locality request streams,
+- deterministic multi-trial benchmarking and report generation in `experiments/benchmark_suite.py`,
+- saved raw, summary, and report outputs, including comparison figures and CSV tables.
 
-* Binary Search Tree Network
-* Optimal Static BST Network
-* SplayNet
+The project intentionally compares:
 
-## Implemented Workloads
+- static baselines versus self-adjusting methods,
+- tree and network formulations of the same setting,
+- cost under locality-free versus locality-heavy workloads,
+- cumulative request cost alongside topology reconfiguration cost.
 
-* Uniform Random
-* Temporal Locality 
-* Hot-Set 
-
-## Repository Structure
+## Repository layout
 
 ```text
-nodes/
-└── node.py
-
-trees/
-├── bst.py
-├── optimal_bst.py
-└── splay_tree.py
-
-networks/
-├── bst_network.py
-├── optimal_network.py
-└── splaynet.py
-
-workloads/
-├── uniform.py
-├── temporal.py
-└── hot_set.py
-
-visualizations/
-├── graph_visualization.py
-└── results_visualization.py
-
-tests/
-├── test_trees.ipynb
-└── test_networks.ipynb
-
-experiments/
-├── data_structures.ipynb
-└── networks.ipynb
+.
+├── README.md
+├── requirements.txt
+├── experiments/
+│   └── benchmark_suite.py
+├── networks/
+│   ├── bst_network.py
+│   ├── optimal_network.py
+│   └── splaynet.py
+├── nodes/
+│   └── node.py
+├── results/
+│   ├── benchmark_manifest.json
+│   ├── figures/
+│   ├── raw/
+│   ├── report/
+│   └── summary/
+├── tests/
+│   ├── conftest.py
+│   ├── test_core_invariants.py
+│   ├── test_network_notebook.py
+│   └── test_tree_notebook.py
+├── trees/
+│   ├── bst.py
+│   ├── optimal_bst.py
+│   └── splay_tree.py
+├── workloads/
+│   ├── hot_set.py
+│   ├── temporal.py
+│   └── uniform.py
+└── report artifacts generated under results/
 ```
 
-## Experimental Methodology
+## Benchmark coverage
 
-### Data Structures
+The benchmark runner exercises six workload families for both trees and networks:
 
-The following data structures are evaluated:
+- uniform
+- hotset_0.1
+- hotset_0.3
+- hotset_0.5
+- temporal_0.5
+- temporal_0.9
 
-* Binary Search Tree (BST)
-* Optimal Static BST
-* Splay Tree
+Each scenario evaluates:
 
-Since the BST and Splay Tree depend on the insertion order of the keys, experiments are repeated over multiple random initializations and the reported results are averaged.
+- fixed BST / BST network baseline,
+- optimal static tree / network reference,
+- Splay Tree / SplayNet self-adjusting online method,
+- repeated trials with seeded randomness,
+- cumulative cost and reconfiguration / rotation counts.
 
-The Optimal Static BST is constructed from the request frequencies and serves as a static baseline.
+## Generated outputs
 
-Metrics:
+The repository already contains benchmark artifacts in `results/`:
 
-* Search Cost
-* Rotation Count
+- `results/raw/`: per-run raw data
+- `results/summary/`: reduced CSV summaries for trees and networks
+- `results/report/`: LaTeX and CSV report outputs
+- `results/figures/`: generated comparison plots for tree and network experiments
+- `results/benchmark_manifest.json`: manifest of benchmark configuration and outputs
 
-### Networks
+## Quick start
 
-The following communication networks are evaluated:
+```bash
+cd /path/to/self-adjusting-networks
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python experiments/benchmark_suite.py
+```
 
-* BST Network
-* Optimal Static BST Network
-* SplayNet
+To inspect the generated benchmark outputs:
 
-As with the tree experiments, BST Network and SplayNet results are averaged over multiple random initializations.
-
-The Optimal Static BST Network is constructed from the communication request matrix and serves as a static baseline.
-
-Metrics:
-
-* Total Communication Cost
-* Rotation Count
-
-## Visualization
-
-The repository contains functions for:
-
-* Binary tree visualization using NetworkX and Graphviz
-* Experimental result visualization using Matplotlib
-
-Left-child edges are displayed in blue and right-child edges in red.
+```bash
+ls results/
+ls results/figures/trees
+ls results/figures/networks
+```
 
 ## References
 
 1. D. D. Sleator and R. E. Tarjan, *Self-Adjusting Binary Search Trees*, Journal of the ACM, 1985.
-
 2. D. E. Knuth, *Optimum Binary Search Trees*, Acta Informatica, 1971.
-
 3. C. Avin and S. Schmid, *Toward Demand-Aware Networking: A Theory for Self-Adjusting Networks*, SIGCOMM Computer Communication Review, 2019.
-
 4. S. Schmid, C. Avin, C. Scheideler, M. Borokhovich, B. Haeupler, and Z. Lotker, *SplayNet: Towards Locally Self-Adjusting Networks*, IEEE/ACM Transactions on Networking, 2018.
